@@ -2,6 +2,7 @@ package com.example.cashfree_single_api_test;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.view.View;
@@ -13,9 +14,13 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import com.google.gson.reflect.TypeToken;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
 
 import okhttp3.MediaType;
 import okhttp3.OkHttpClient;
@@ -26,7 +31,7 @@ import okhttp3.Response;
 public class MainActivity extends AppCompatActivity {
 
     public static String clientId = "$YOUR_UNIQUE_CLIENT_ID_HERE";
-    public static String clientSecret = "$YOUR_UNIQUE_CLIENT_SECRET_KEY_HERE";
+    public static String clientSecret = "$YOUR_UNIQUE_CLIENT_SECRET_HERE";
 
     public static String contentType = "application/json";
     public static String apiVersion = "2022-01-01";
@@ -67,23 +72,41 @@ public class MainActivity extends AppCompatActivity {
                         customerEmail.getText().toString(),
                         customerPhone.getText().toString()
                 );
-                showResponse(response);
+//                showResponse(response);
+                doDirectPayment(response);
             } catch (Exception e) {
                 e.printStackTrace();
             }
         });
     }
 
-    private void showResponse(Response response) throws IOException {
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonElement je = JsonParser.parseString(response.body().string());
-        String jsonString = gson.toJson(je);
+    private void doDirectPayment(Response response) throws IOException {
+        String responseBody = response.body().string();
+        JsonElement je = JsonParser.parseString(responseBody);
+        JsonObject jsonObject = je.getAsJsonObject();
+        System.out.println("JSON Object Generated : \n" + jsonObject);
 
-        System.out.println("$$$$$$$$$$JSON RESPONSE$$$$$$$$$" + jsonString);
-        apiResponseText.setText(jsonString);
-        linearLayout.setVisibility(View.GONE);
-        apiResponseText.setVisibility(View.VISIBLE);
+        String token = jsonObject.get("order_token").getAsString();
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$ TOKEN $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n" + token);
+
+        String paymentLink = jsonObject.get("payment_link").getAsString();
+        System.out.println("$$$$$$$$$$$$$$$$$$$$$$$$$$$ PAYMENT LINK $$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$\n" + paymentLink);
+
+        Intent intent = new Intent(MainActivity.this, PaymentProcess.class);
+        intent.putExtra("link", paymentLink);
+        startActivity(intent);
     }
+
+//    private void showResponse(Response response) throws IOException {
+//        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+//        JsonElement je = JsonParser.parseString(response.body().string());
+//        String jsonString = gson.toJson(je);
+//
+//        System.out.println("$$$$$$$$$$JSON RESPONSE$$$$$$$$$" + jsonString);
+//        apiResponseText.setText(jsonString);
+//        linearLayout.setVisibility(View.GONE);
+//        apiResponseText.setVisibility(View.VISIBLE);
+//    }
 
     private Response createNewOrder(String orderId, String amount, String currency,
                                 String customerId, String email, String phone) throws IOException {
