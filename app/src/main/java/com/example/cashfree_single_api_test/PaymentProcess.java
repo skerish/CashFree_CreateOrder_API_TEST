@@ -5,8 +5,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.os.StrictMode;
 import android.webkit.WebChromeClient;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 public class PaymentProcess extends AppCompatActivity {
 
@@ -28,10 +30,19 @@ public class PaymentProcess extends AppCompatActivity {
         if (bundle != null)
             payment_link = bundle.getString("link");
 
+
         WebSettings webSettings = webView.getSettings();
         webSettings.setJavaScriptEnabled(true);
         webSettings.setDomStorageEnabled(true);
         webView.setWebChromeClient(new WebChromeClient());
         webView.loadUrl(payment_link);
+        webView.setWebViewClient(new WebViewClient() {
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, WebResourceRequest request) {
+                view.loadUrl(request.getUrl().toString());
+                return false;
+            }
+        });
+
     }
 }

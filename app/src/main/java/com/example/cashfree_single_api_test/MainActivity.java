@@ -30,8 +30,8 @@ import okhttp3.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static String clientId = "$YOUR_UNIQUE_CLIENT_ID_HERE";
-    public static String clientSecret = "$YOUR_UNIQUE_CLIENT_SECRET_HERE";
+    public static String clientId = "1469829d60873d925cec9f77a1289641";
+    public static String clientSecret = "698e2e26f4c818a5a9d36c254b544ce4215bbb91";
 
     public static String contentType = "application/json";
     public static String apiVersion = "2022-01-01";
