@@ -11,6 +11,7 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.google.android.material.textfield.TextInputEditText;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonElement;
@@ -39,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
     // TEST URL
     public static String URL = "https://sandbox.cashfree.com/pg/orders";
 
-    EditText orderId, orderAmount, orderCurrency, customerId, customerEmail, customerPhone;
+    TextInputEditText orderId, orderAmount, orderCurrency, customerId, customerEmail, customerPhone;
     Button createClient;
     LinearLayout linearLayout;
     TextView apiResponseText;
